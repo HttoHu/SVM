@@ -4,8 +4,7 @@ bool _is_operator(char ch)
 {
 	switch (ch)
 	{
-	case '+':case '-':case '*':case '/':case '&':case '|':case ':':case'=':case'<':case'>':case'[':case']':case'(':case')':
-	case';':case ',':case '.':case'!':case'#':
+	case '[':case ']':case ',':case ':':
 		return true;
 	default:
 		return false;
@@ -214,16 +213,6 @@ void Simcc::Lexer::Lexer::init_token_stream()
 		{
 		case '-':
 			read_number();
-			continue;
-		case '{':
-			token_stream.push_back(new Token(Tag::BlockBegin));
-			TId::id_table.push_back(std::map<std::string,TId*>());
-			index++;
-			continue;
-		case '}':
-			token_stream.push_back(new Token(Tag::BlockEnd));
-			TId::id_table.pop_back();
-			index++;
 			continue;
 		case '\'':
 			read_char();

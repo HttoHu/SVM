@@ -11,27 +11,18 @@ namespace Simcc
 		{
 			SInt, SDouble, SLong, SChar, SString, SBool,
 			TLiteralInt, TLiteralLong, TLiteralDouble, TLiteralChar, TLiteralString,
-			TWhile, TFor, TBreak, TContinue,
-			TIf, TSwitch, TElse, TElif, TCase, TGoto,
-			/*else if*/
-			TClass, TNamespace, TPublic, TPrivate,
-			TReturn,
 			Symbol,
 			Id,
-			Assign, Ge, Gt, Le, Lt, Ne, Eq,
-			Add, Sub, Mul, Div, PP, MM,
 			True, False,
 			TTag,
-			MemberPoint, Function,
-			Place, //::
+			Add,Sub,Mul,Div,
+			INT,
+			Goto,CMP,JGE,JGT,JLE,JLT,JNE,JMP,
+			RET,
 			And, Or, // && ,||
-			Lk, Rk,// ( and )
-			BlockBegin, BlockEnd, // { }
 			LSB, RSB,// [ ]
 			Comma,// ,
 			Endl,
-			EndStmt,
-			System,
 		};
 		std::unordered_map<std::string, Tag>& keyword_map();
 		std::unordered_map<std::string, Tag>& symbol_map();
@@ -43,12 +34,6 @@ namespace Simcc
 			{
 				switch (tag)
 				{
-				case System:
-					return "<system>";
-				case TBreak:
-					return "<break>";
-				case TContinue:
-					return "<continue>";
 				case True:
 					return "<true>";
 				case False:
@@ -65,31 +50,10 @@ namespace Simcc
 					return "<double>";
 				case SChar:
 					return "<char>";
-
-				case Function:
-					return "<function>";
 				case TTag:
 					return "<Tag>";
-				case PP:
-					return "<++>";
-				case MM:
-					return "<-->";
 				case Endl:
 					return "<endline>\n";
-				case Assign:
-					return "< = >";
-				case Eq:
-					return "< == >";
-				case Ne:
-					return "< != >";
-				case Ge:
-					return "< >= >";
-				case Gt:
-					return "< > >";
-				case Le:
-					return "< <= >";
-				case Lt:
-					return "< < >";
 				case Simcc::Lexer::TLiteralInt:
 					return "<tint>";
 				case Simcc::Lexer::TLiteralLong:
@@ -100,52 +64,18 @@ namespace Simcc
 					return "<tchar>";
 				case Simcc::Lexer::TLiteralString:
 					return "<tstring>";
-				case Simcc::Lexer::TWhile:
-					return "<while>";
-				case Simcc::Lexer::TIf:
-					return "<if>";
-				case Simcc::Lexer::TFor:
-					return "<for>";
-				case Simcc::Lexer::TSwitch:
-					return "<switch>";
-				case Simcc::Lexer::TClass:
-					return "<class>";
-				case Simcc::Lexer::TNamespace:
-					return "<namespace>";
-				case Simcc::Lexer::TReturn:
-					return "<return>";
 				case Simcc::Lexer::Symbol:
 					return "<symbol>";
-				case Simcc::Lexer::Add:
-					return "<+>";
-				case Simcc::Lexer::Sub:
-					return "<->";
-				case Simcc::Lexer::Mul:
-					return "<*>";
-				case Simcc::Lexer::Div:
-					return "</>";
 				case Simcc::Lexer::And:
 					return "<&&>";
 				case Simcc::Lexer::Or:
 					return "<||>";
-				case Simcc::Lexer::Lk:
-					return "<(>";
-				case Simcc::Lexer::Rk:
-					return "<)>";
-				case Simcc::Lexer::BlockBegin:
-					return "<{>";
-				case Simcc::Lexer::BlockEnd:
-					return "<}>";
 				case Simcc::Lexer::LSB:
 					return "<[>";
 				case Simcc::Lexer::RSB:
 					return "<]>";
-				case Simcc::Lexer::MemberPoint:
-					return "<.>";
 				case Simcc::Lexer::Comma:
 					return "<,>";
-				case Simcc::Lexer::EndStmt:
-					return "<;>";
 				default:
 					return "<unknown>";
 					break;

@@ -1,23 +1,23 @@
 #pragma once
-#include "Token.hpp"
-#include <map>
-#include <vector>
+#include"Token.hpp"
+#include <unordered_map>
+#include <list>
 namespace Simcc
 {
-	namespace Lexer
-	{
-		class TId :public Token
-		{
-		public:
-			static std::vector<std::map<std::string,TId*>> id_table;
-			static TId* find_id(const std::string & str);
-			static TId* insert_id(const std::string &id_name);
-			static void delete_id_table();
-			TId(const std::string & str) :Token(Tag::Id),id_name(str){}
-			virtual std::string to_string()const override;
-			size_t add = 0;
-		private:
-			std::string id_name;
-		};
-	}
+	class Id :public Token {
+	public:
+		static std::unordered_map<std::string, Id*> id_table;
+		static Id* find_id(const std::string &str);
+		Id(const std::string &v) :Token(Tag::TId),name(v){
+			static int in=0;
+			index=in++;
+			id_table.insert({v,this});
+		}
+		std::string to_string()const override{
+			return "<id: " + name + ">";
+		}
+	private:
+		std::string name;
+		size_t index;
+	};
 }

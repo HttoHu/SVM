@@ -2,102 +2,54 @@
 #include "Token.hpp"
 namespace Simcc
 {
-	namespace Lexer
+	class LInt:public Token
 	{
-		class VInt :public Token
+	public:
+		LInt(int v) :Token(Tag::Num), content(v) {}
+		std::string to_string()const override
 		{
-		public:
-			VInt(int32_t v) :Token(TLiteralInt), value(v) {}
-			std::string to_string()const override
-			{
-				return "<VInt: " + std::to_string(value) + ">";
-			}
-			void* get_value()override
-			{
-				return (void*)&value;
-			}
-			const void* const get_value()const override
-			{
-				return (void*)&value;
-			}
-		private:
-			int32_t value;
-		};
-		class VDouble :public Token
+			return "<LN:"+std::to_string(content)+">";
+		}
+		int content;
+	};
+	class LLInt :public Token
+	{
+	public:
+		LLInt(int v) :Token(Tag::Lonum), content(v) {}
+		std::string to_string()const override
 		{
-		public:
-			VDouble(double v) :Token(TLiteralDouble), value(v) {}
-			std::string to_string()const override
-			{
-				return "<vdouble: " + std::to_string(value) + ">";
-			}
-			void* get_value()override
-			{
-				return (void*)&value;
-			}
-			const void* const get_value()const override
-			{
-				return (void*)&value;
-			}
-		private:
-			double value;
-		};
-		class VLong :public Token
+			return "<LN:" + std::to_string(content) + ">";
+		}
+		int64_t content;
+	};
+	class LChar :public Token
+	{
+	public:
+		LChar(char v) :Token(Tag::LChar), content(v) {}
+		std::string to_string()const override
 		{
-		public:
-			VLong(int64_t v) :Token(TLiteralLong), value(v) {}
-			std::string to_string()const override
-			{
-				return "<vdouble: " + std::to_string(value) + ">";
-			}
-			void* get_value()override
-			{
-				return (void*)&value;
-			}
-			const void* const get_value()const override
-			{
-				return (void*)&value;
-			}
-		private:
-			int64_t value;
-		};
-		class VString :public Token
+			return "<LC:" + std::to_string(content) + ">";
+		}
+		char content;
+	};
+	class LDouble :public Token
+	{
+	public:
+		LDouble(double v) :Token(Tag::Dec), content(v) {}
+		std::string to_string()const override
 		{
-		public:
-			VString(std::string v) :Token(TLiteralString), value(v) {}
-			std::string to_string()const override
-			{
-				return "<vstring:" + value + ">";
-			}
-			void* get_value()override
-			{
-				return (void*)&value;
-			}
-			const void* const get_value()const override
-			{
-				return (void*)&value;
-			}
-		private:
-			std::string value;
-		};
-		class VChar :public Token
+			return "<LD:" + std::to_string(content) + ">";
+		}
+		double content;
+	};
+	class LString :public Token
+	{
+	public:
+		LString(const std::string & v) :Token(Tag::LiteralString), content(v) {}
+		std::string to_string()const override
 		{
-		public:
-			VChar(char v) :Token(TLiteralChar), value(v) {}
-			std::string to_string()const override
-			{
-				return "<vchar: " + std::string(1,value) + ">";
-			}
-			void* get_value()override
-			{
-				return (void*)&value;
-			}
-			const void* const get_value()const override
-			{
-				return (void*)&value;
-			}
-		private:
-			char value;
-		};
-	}
+			return "<LSTR: " + content + ">";
+		}
+		std::string content;
+	};
 }

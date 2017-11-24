@@ -1,23 +1,24 @@
 #include "../HPP/Token.hpp"
-using namespace Simcc::Lexer;
-std::unordered_map<std::string, Tag>& Simcc::Lexer::keyword_map()
+using namespace Simcc;
+std::unordered_map<std::string, Token*> Token::symbol_map
 {
-	static std::unordered_map<std::string, Tag> ret{
-		{ "true",Tag::True },{ "false",Tag::False },{"int",Tag::SInt},{"double",Tag::SDouble},{"long",Tag::SLong},
-		{"char",Tag::SChar},{"string",Tag::SString},{"bool",Tag::SBool},
-		 {"jmp",Tag::JMP},{"jge",Tag::JGE},{"jne",Tag::JNE},
-		{"cmp",Tag::CMP},{"jle",Tag::JLE},{"jlt",Tag::JLT},{"jgt",Tag::JGT},{"ret",Tag::RET},
-		{ "And",Tag::And },{ "OR",Tag::Or },
-	};
-	return ret;
-}
+	{ "int",new Token(Tag::Int) },{ "string",new Token(Tag::String) },
+	{ "char",new Token(Tag::Char) },{ "double",new Token(Tag::Double) },
+	{ "long",new Token(Tag::Long) },
+	{"add",new Token(Tag::Add)},{ "sub",new Token(Tag::Sub) },
+	{ "mov",new Token(Tag::Mov) },{ "mul",new Token(Tag::Mul) },
+	{ "div",new Token(Tag::Div) },{ "imov8",new Token(Tag::IMov8) },
+	{ "imov16",new Token(Tag::IMov16) },{ "imov32",new Token(Tag::IMov32) },
+	{ "imov64",new Token(Tag::IMov64) },{ "cmp",new Token(Tag::Cmp) },
+	{ "jeq",new Token(Tag::Jeq) },{ "jne",new Token(Tag::Jne) },
+	{ "jge",new Token(Tag::Jge) },{ "jgt",new Token(Tag::Jgt) },
+	{ "jle",new Token(Tag::Jle) },{ "jlt",new Token(Tag::Jlt) },
+};
 
-std::unordered_map<std::string, Tag>& Simcc::Lexer::symbol_map()
+Token * Simcc::Token::find(const std::string &str)
 {
-	static std::unordered_map<std::string, Tag> ret{
-		{ "[",Tag::LSB },{ "]",Tag::RSB },
-		{",",Tag::Comma},
-		{":",Tag::TTag}
-	};
-	return ret;
+	auto result = symbol_map.find(str);
+	if (result == symbol_map.end())
+		return nullptr;
+	return result->second;
 }

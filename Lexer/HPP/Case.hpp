@@ -2,18 +2,19 @@
 #include "Token.hpp"
 namespace Simcc
 {
-	namespace Lexer
-	{
-		class Case final:public Token
-		{
-		public:
-			static void create_new_case(std::string name,size_t index);
-			static Case find_case();
-			static std::unordered_map<std::string, Case*> case_table;
-			Case(size_t index) :Token(Tag::TTag),content(index) {}
-			
-		private:
-			size_t content;
-		};
-	}
+  class Case:public Token
+  {
+  public:
+    static std::unordered_map<std::string, Case*> case_table;
+    static Case* find_case(const std::string &str);
+    Case(const std::string &v,size_t pos):Token(Tag::TCase),content(v),position(pos){
+      case_table.insert({content,this});
+    }
+    std::string to_string()const override{
+        return "<Case: "+content+" Pos:"+std::to_string(position)+">";
+    }
+  private:
+    const std::string &content;
+    size_t position;
+  }
 }

@@ -16,6 +16,7 @@ namespace Simcc
 		std::string to_string()const override{
 			return "<id: " + name + ">";
 		}
+		void write_to_binary_file()const override;
 	private:
 		std::string name;
 		size_t index;

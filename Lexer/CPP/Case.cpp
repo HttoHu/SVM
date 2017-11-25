@@ -1,4 +1,5 @@
 #include "../HPP/Case.hpp"
+#include "../HPP/Translator.hpp"
 using namespace Simcc;
 std::unordered_map<std::string, Case*> Case::case_table;
 Case* Case::find_case(const std::string &str)
@@ -9,4 +10,14 @@ Case* Case::find_case(const std::string &str)
     return nullptr;
   }
   return result->second;
+}
+
+void Simcc::Case::write_to_binary_file() const
+{
+	char *v = (char*)&position;
+	for (int i = 0; i < sizeof(double); i++)
+	{
+		BinFile::file_content += v[i];
+		BinFile::index++;
+	}
 }

@@ -10,11 +10,12 @@ namespace Simcc
     Case(const std::string &v,size_t pos):Token(Tag::TCase),content(v),position(pos){
       case_table.insert({content,this});
     }
+	void write_to_binary_file()const override;
     std::string to_string()const override{
         return "<Case: "+content+" Pos:"+std::to_string(position)+">";
     }
   private:
     const std::string &content;
     size_t position;
-  }
+  };
 }

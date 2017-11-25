@@ -1,11 +1,10 @@
 #pragma once
-#include "Token.hpp"
 namespace Simcc
 {
   class BinFile{
   public:
-  
-  private:
-    std::string file_content;
-  }
+    static void output(const std::string &str);
+    static std::string file_content;
+    static size_t index;
+  };
 }

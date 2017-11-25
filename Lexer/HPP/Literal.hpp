@@ -10,6 +10,7 @@ namespace Simcc
 		{
 			return "<LN:"+std::to_string(content)+">";
 		}
+		void write_to_binary_file()const override;
 		int content;
 	};
 	class LLInt :public Token
@@ -20,6 +21,7 @@ namespace Simcc
 		{
 			return "<LN:" + std::to_string(content) + ">";
 		}
+		void write_to_binary_file()const override;
 		int64_t content;
 	};
 	class LChar :public Token
@@ -30,6 +32,7 @@ namespace Simcc
 		{
 			return "<LC:" + std::to_string(content) + ">";
 		}
+		void write_to_binary_file()const override;
 		char content;
 	};
 	class LDouble :public Token
@@ -40,6 +43,7 @@ namespace Simcc
 		{
 			return "<LD:" + std::to_string(content) + ">";
 		}
+		void write_to_binary_file()const override;
 		double content;
 	};
 	class LString :public Token
@@ -50,6 +54,7 @@ namespace Simcc
 		{
 			return "<LSTR: " + content + ">";
 		}
+		void write_to_binary_file()const override;
 		std::string content;
 	};
 }

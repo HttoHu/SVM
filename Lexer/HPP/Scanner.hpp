@@ -1,14 +1,15 @@
 #pragma once
 #include <string>
-#include "Token.hpp"
-
+#include <vector>
 namespace Simcc
 {
+	class Token;
 	namespace Lexer
 	{
 		std::vector<Token*> &token_stream();
 		void set_token_stream();
-		std::string content;
-		size_t index;
+		void init(const std::string &str);
+		extern std::string content;
+		extern size_t index;
 	}
 }

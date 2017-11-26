@@ -15,6 +15,7 @@ namespace Simcc
 		Jmp, TCase,
 		TId,
 	};
+	extern std::unordered_map<Tag, std::string> tag_to_string_table;
 	class Token
 	{
 	public:
@@ -22,7 +23,7 @@ namespace Simcc
 		static Token* find(const std::string &str);
 		Token(Tag t) :tag(t) {}
 		virtual void write_to_binary_file()const;
-		virtual std::string to_string()const { return "<empty>"; }
+		virtual std::string to_string()const;
 		virtual ~Token() {}
 
 	private:

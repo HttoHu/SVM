@@ -1,6 +1,10 @@
 #include "../HPP/Token.hpp"
 #include "../HPP/Translator.hpp"
 using namespace Simcc;
+std::unordered_map<Tag, std::string> Simcc::tag_to_string_table
+{
+	{Tag::Add,"add"},{Tag::Char,"char"},{Tag::Int,"int"},
+};
 std::unordered_map<std::string, Token*> Token::symbol_map
 {
 	{ "int",new Token(Tag::Int) },{ "string",new Token(Tag::String) },
@@ -30,4 +34,12 @@ void Token::write_to_binary_file()const
 	char ch=tag;
 	BinFile::file_content += ch;
 	BinFile::index++;
+}
+
+std::string Simcc::Token::to_string() const
+{
+	auto result = tag_to_string_table.find(tag);
+	if (result == tag_to_string_table.end())
+		return "<error>";
+	return "<" + result->second + ">";
 }

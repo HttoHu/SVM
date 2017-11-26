@@ -8,7 +8,7 @@ namespace Simcc
 		LInt(int v) :Token(Tag::Num), content(v) {}
 		std::string to_string()const override
 		{
-			return "<LN:"+std::to_string(content)+">";
+			return "<Num:"+std::to_string(content)+">";
 		}
 		void write_to_binary_file()const override;
 		int content;
@@ -19,7 +19,7 @@ namespace Simcc
 		LLInt(int v) :Token(Tag::Lonum), content(v) {}
 		std::string to_string()const override
 		{
-			return "<LN:" + std::to_string(content) + ">";
+			return "<LNum:" + std::to_string(content) + ">";
 		}
 		void write_to_binary_file()const override;
 		int64_t content;

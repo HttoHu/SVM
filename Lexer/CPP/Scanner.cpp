@@ -1,9 +1,13 @@
 #include "../HPP/Scanner.hpp"
 #include "../HPP/Literal.hpp"
 #include "../HPP/Id.hpp"
+#include <iostream>
 #include <fstream>
 using namespace Simcc::Lexer;
-void read_string() {
+size_t Simcc::Lexer::index = 0;
+std::string Simcc::Lexer::content;
+void read_string()
+{
 	std::string value;
 	if (content[index] == '\"')
 		index++;
@@ -106,11 +110,17 @@ void read_word()
 	token_stream().push_back(result->second);
 
 }
-void init(const std::string &str)
+void Simcc::Lexer::init(const std::string &str)
 {
-  using namespace std;
+	using namespace std;
 	ifstream ifs(str);
 	content = std::string((istreambuf_iterator<char>(ifs)), istreambuf_iterator<char>());
+	std::cout << "INIT SUCCESS:File Content: ";
+	const int FRAMEW = 20;
+	const char FRAME = '-';
+	std::cout << "\n" + std::string(FRAMEW, '=') + str + std::string(FRAMEW, '=') + "\n";
+	std::cout << content;
+	std::cout << "\n" + std::string(FRAMEW * 2 + str.size(), '=') + "\n";
 }
 std::vector<Simcc::Token*>& Simcc::Lexer::token_stream()
 {
@@ -121,17 +131,21 @@ std::vector<Simcc::Token*>& Simcc::Lexer::token_stream()
 void Simcc::Lexer::set_token_stream()
 {
 	if (index >= content.size())
+	{
 		return;
-	if (content[index] == ' '&&content[index] == '\t')
+	}
+
+	std::cout << "Index:" << index << std::endl;
+	if (content[index] == ' ' || content[index] == '\t'||content[index]=='\n')
 		index++;
 	switch (content[index])
 	{
 	case '\"':
 		read_string();
-		return;
+		break;
 	case '1':case '2':case '3':case '4':case '5':case '6':case'7':case '8':case'9':case'0':case '-':
 		read_number();
-		return;
+		break;
 	default:
 		read_word();
 		break;

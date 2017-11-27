@@ -14,7 +14,11 @@ namespace Simcc
 			id_table.insert({v,this});
 		}
 		std::string to_string()const override{
-			return "<id: " + name + ">";
+			return "<id: " + name + "\t content:"+std::to_string(index)+">";
+		}
+		size_t token_length()const override
+		{
+			return sizeof(name);
 		}
 		void write_to_binary_file()const override;
 	private:

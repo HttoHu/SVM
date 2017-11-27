@@ -1,6 +1,7 @@
 #include "../HPP/Scanner.hpp"
 #include "../HPP/Literal.hpp"
 #include "../HPP/Id.hpp"
+#include "../HPP/Case.hpp"
 #include <iostream>
 #include <fstream>
 using namespace Simcc::Lexer;
@@ -49,6 +50,7 @@ void read_string()
 	}
 	index++;
 	token_stream().push_back(new Simcc::LString(value));
+	Simcc::Token::wpos += value.size();
 }
 void read_number()
 {
@@ -68,6 +70,7 @@ void read_number()
 		if (isN)
 			intPart = -intPart;
 		token_stream().push_back(new Simcc::LLInt(intPart));
+		Simcc::Token::wpos += 8;
 		return;
 	}
 	if (content[index] != '.')
@@ -75,6 +78,7 @@ void read_number()
 		if (isN)
 			intPart = -intPart;
 		token_stream().push_back(new Simcc::LInt(static_cast<int32_t>(intPart)));
+		Simcc::Token::wpos += 4;
 		return;
 	}
 	index++;
@@ -88,6 +92,7 @@ void read_number()
 	if (isN)
 		v = -v;
 	token_stream().push_back(new Simcc::LDouble(v));
+	Simcc::Token::wpos += 8;
 }
 void read_word()
 {
@@ -96,18 +101,59 @@ void read_word()
 	{
 		word += content[index++];
 	}
-	auto result = Simcc::Token::symbol_map.find(word);
-	if (result == Simcc::Token::symbol_map.end())
+	if (content[index] == '@')
 	{
+		index++;
+		Simcc::Case *c = Simcc::Case::find_case(word);
+		if (c != nullptr)
+		{
+			token_stream().push_back(c);
+			Simcc::Token::wpos += c->token_length();
+			return;
+		}
+		else
+		{
+			c= new Simcc::Case(word);
+			Simcc::Case::case_table[word] = c;
+			token_stream().push_back(c);
+			Simcc::Token::wpos += c->token_length();
+			return;
+		}
+	}
+	if (content[index] == ':')
+	{
+		index++;
+		auto result = Simcc::Case::case_table.find(word);
+		if (result != Simcc::Case::case_table.end())
+		{
+			result->second->resetPos();
+		}
+		else
+		{
+			Simcc::Case::case_table[word] = new Simcc::Case(word);
+		}
+		return;
+	}
+	//First search whether case_table contains a key matched word. If exist the key, then push the value into token_stream
+
+
+	// search symbol_map 
+	auto id_result = Simcc::Token::symbol_map.find(word);
+	if (id_result == Simcc::Token::symbol_map.end())
+	{
+		// if symbol_map not contains a key matched word. then create an id by word and push into token_stream.
 		Simcc::Id *tmp = Simcc::Id::find_id(word);
 		if (tmp == nullptr)
 		{
 			tmp = new Simcc::Id(word);
+			Simcc::Token::wpos += 3;
 		}
 		token_stream().push_back(tmp);
+		Simcc::Token::wpos += 1;
 		return;
 	}
-	token_stream().push_back(result->second);
+	Simcc::Token::wpos += 1;
+	token_stream().push_back(id_result->second);
 
 }
 void Simcc::Lexer::init(const std::string &str)
@@ -131,15 +177,16 @@ std::vector<Simcc::Token*>& Simcc::Lexer::token_stream()
 void Simcc::Lexer::set_token_stream()
 {
 	if (index >= content.size())
-	{
 		return;
-	}
-
 	std::cout << "Index:" << index << std::endl;
-	if (content[index] == ' ' || content[index] == '\t'||content[index]=='\n')
+	if (content[index] == ' ' || content[index] == '\t')
 		index++;
 	switch (content[index])
 	{
+	case '\n':
+		index++;
+		token_stream().push_back(new Token(Tag::ENDL));
+		break;
 	case '\"':
 		read_string();
 		break;

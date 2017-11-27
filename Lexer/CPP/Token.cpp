@@ -1,9 +1,10 @@
 #include "../HPP/Token.hpp"
 #include "../HPP/Translator.hpp"
 using namespace Simcc;
+size_t Simcc::Token::wpos = 0;
 std::unordered_map<Tag, std::string> Simcc::tag_to_string_table
 {
-	{Tag::Add,"add"},{Tag::Char,"char"},{Tag::Int,"int"},
+	{Tag::Add,"add"},{Tag::Char,"char"},{Tag::Int,"int"},{Tag::ENDL,"\n"}
 };
 std::unordered_map<std::string, Token*> Token::symbol_map
 {

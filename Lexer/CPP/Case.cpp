@@ -2,6 +2,10 @@
 #include "../HPP/Translator.hpp"
 using namespace Simcc;
 std::unordered_map<std::string, Case*> Case::case_table;
+void Simcc::Case::set_positon(Token * tok, size_t pos)
+{
+	((Case*)tok)->position = pos;
+}
 Case* Case::find_case(const std::string &str)
 {
   auto result=case_table.find(str);

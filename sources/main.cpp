@@ -2,6 +2,7 @@
 #include <time.h>
 #include <fstream>
 #include "../includes/lexer.hpp"
+#include "../includes/data.hpp"
 using namespace SVM;
 std::string get_file_content(const std::string& filename)
 {
@@ -14,12 +15,22 @@ std::string get_file_content(const std::string& filename)
 	std::string file_content((istreambuf_iterator<char>(ifs)), istreambuf_iterator<char>());
 	return file_content;
 }
-
-int main()
+void fun()
 {
 	std::string file_content = get_file_content("test.svm");
-	LexerTools::build_token_stream(file_content);
-	token_stream.print();
+	SVM::LexerTools::build_token_stream(file_content);
+	SVM::token_stream.print();
+}
+int main()
+{
+	try
+	{ 
+		fun();
+	}
+	catch (SVM::Error& e)
+	{
+		std::cout << e.what();
+	}
 	while (std::cin.get());
     return 0;
 }

@@ -1,0 +1,26 @@
+.program
+var i 0
+var sum 0
+var b1 false
+:_T1___24
+ist i 10000 b1
+iftrue b1 $CURRENT
+isadd i sum
+inc i
+goto T1
+push sum
+call cout
+:E1
+==================
+; please delete it before you  test the file.
+| const_stack	| 0,0,false,10000
+| stack				|i,sum,b1,_t1
+0. var 0 0
+1. var 1 1
+2. var 2 2
+3. var 3 3
+4. ist 0 3 2
+5. iftrue 3 6
+6. isadd 0 1
+7. inc 0
+8. goto 2

@@ -4,7 +4,6 @@
 #include <vector>
 namespace SVM
 {
-	
 	class Memory
 	{
 	public:
@@ -28,4 +27,5 @@ namespace SVM
 		std::vector<void*> mem;
 	};
 	extern Memory memory;
+	extern Memory const_mem;
 }

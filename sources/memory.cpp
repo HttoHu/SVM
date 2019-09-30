@@ -3,6 +3,8 @@
 namespace SVM
 {
 	Memory memory;
+	Memory const_mem;
+
 	Memory::Memory() :mem(capacity){}
 
 	size_t Memory::push()

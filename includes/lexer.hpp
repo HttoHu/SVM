@@ -18,14 +18,14 @@ namespace SVM
 		INTEGER, REAL, BYTE,STRLIT,
 		IADD, ISUB, IMUL, IDIV, IGT, IST, IEQ,IEGT,IEST,
 		RADD, RSUB, RMUL, RDIV, RGT, RST, REQ, REGT, REST,
-		SADD, INC, SSUB,SMUL,SDIV,
+		SADD, INC, DEC,SSUB,SMUL,SDIV,
 		RSADD,RSSUB,RSMUL,RSDIV,
 		AND, OR,FALSE,TRUE,
 		GOTO, IFTRUE, IFFALSE,
 		POSTAG,PUSH,
 		CALL, OFFSET, VAR, MEMB,
 		DOT, COLON, ADDR_TAG, STRUCT,
-		ENDL,
+		ENDL,TAG,END,
 	};
 	class Token
 	{
@@ -33,6 +33,7 @@ namespace SVM
 		Token(TokenTag tg) :tag(tg) {}
 		virtual ~Token() {}
 		virtual std::string to_string();
+		virtual size_t* get_add() { throw Error("try to call get_add() at Token"); }
 		TokenTag get_tag() { return tag; }
 	private:
 		TokenTag tag;
@@ -41,27 +42,44 @@ namespace SVM
 	class Id :public Token
 	{
 	public:
-		Id(std::string str) :Token(ID), id(str) {}
-		static std::deque<std::map<std::string, Id*>>& id_table()
+		Id(std::string str) :Token(ID), id(str) 
 		{
-			static std::deque<std::map<std::string, Id*>> ret(1);
+			id_table().insert({ str ,this });
+		}
+		static std::map<std::string, Token*>& id_table()
+		{
+			static std::map<std::string, Token*> ret;
 			return ret;
 		}
-		static Id* find(std::string str);
+		static Token* find(std::string str);
+		size_t* get_add()override { return &pos; }
 		std::string to_string()override;
 		std::string get_value() { return id; }
 	private:
 		std::string id;
+		size_t pos;
 	};
-
+	class Tag :public Token
+	{
+	public:
+		Tag(std::string str);
+		size_t* get_add()override { return &sz; }
+		std::string to_string()override {
+			return "<Tag: " + std::to_string(sz) + ">";
+		}
+	private:
+		size_t sz;
+	};
 	class Number :public Token
 	{
 	public:
 		Number(int v) :Token(INTEGER), value(v) {}
 		int get_value() { return value; }
+		size_t* get_add()override { return &pos; }
 		std::string to_string()override;
 	private:
 		int value;
+		size_t pos;
 	};
 
 	class Float :public Token
@@ -69,8 +87,10 @@ namespace SVM
 	public:
 		Float(double v) :Token(REAL), value(v) {}
 		double get_value() { return value; }
+		size_t* get_add()override { return &pos; }
 		std::string to_string()override;
 	private:
+		size_t pos;
 		double value;
 	};
 
@@ -79,7 +99,9 @@ namespace SVM
 	public:
 		Byte(char v) :Token(BYTE), value(v) {}
 		char get_value()const { return value; }
+		size_t* get_add()override { return &pos; }
 	private:
+		size_t pos;
 		char value;
 	};
 
@@ -88,8 +110,10 @@ namespace SVM
 	public:
 		StringToken(std::string v) :Token(STRLIT), value(v) {}
 		std::string get_value()const { return value; }
+		size_t* get_add()override { return &pos; }
 	private:
 		std::string value;
+		size_t pos;
 	};
 
 	class TokenStream
@@ -98,6 +122,7 @@ namespace SVM
 		TokenStream() {}
 		Token* this_token();
 		TokenTag this_tag();
+		size_t size() { return content.size(); }
 		void push_back(Token* tok);
 		void next();
 		void advance();
@@ -117,6 +142,7 @@ namespace SVM
 		}
 		size_t get_value(Token* tok) { return line_no; }
 		static size_t current_line;
+		static size_t unins_count;
 		std::string to_string()override {
 			return "\n";
 		}

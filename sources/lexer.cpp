@@ -3,6 +3,7 @@ namespace SVM
 {
 	std::string content;
 	size_t Endl::current_line=0;
+	size_t Endl::unins_count=0;
 	std::map<TokenTag, std::string> TagStrMap
 	{
 		{EPT,"EPT"},{INTEGER,"INTEGER"},{ID,"ID"},
@@ -13,7 +14,7 @@ namespace SVM
 		{RGT,"RGT"},{RST,"RST"},{REQ,"REQ"},{REGT,"REGT"},{REST,"REST"},
 		{SADD,"SADD"},{SSUB,"SSUB"},{SMUL,"SMUL"},{SSUB,"SSUB"},
 		{RSADD,"RSADD"},{RSSUB,"RSSUB"},{RSMUL,"RSMUL"},{RSDIV,"RSDIV"},
-		{AND,"AND"},{OR,"OR"},{INC,"INC"},{FALSE,"FALSE"},{TRUE,"TRUE"},
+		{AND,"AND"},{OR,"OR"},{INC,"INC"},{DEC,"DEC"}, {FALSE,"FALSE"},{TRUE,"TRUE"},
 		{GOTO,"GOTO"},{IFTRUE,"IFTRUE"},{IFFALSE,"IFFALSE"},{POSTAG,"POSTAG"},{PUSH,"PUSH"},
 		{CALL,"CALL"},{OFFSET,"OFFSET"},{VAR,"VAR"},
 		{DOT,"DOT"},{COLON,"COLON"},{ADDR_TAG,"ADDR_TAG"},{STRUCT,"STRUCT"},
@@ -29,7 +30,7 @@ namespace SVM
 		{"req",new Token(REQ)},{"rst",new Token(RST)},{"rgt",new Token(RGT)},{"regt",new Token(REGT)},{"rest",new Token(REST)},
 		{"rssub",new Token(RSSUB)},{"rsadd",new Token(RSADD)},{"rsmul",new Token(RSMUL)},{"rsdiv",new Token(RSDIV)},
 		{"and",new Token(AND)},{"or",new Token(OR)},{"false",new Token(FALSE)},{"true",new Token(TRUE)},
-		{"inc",new Token(INC)},{"goto",new Token(GOTO)},{"iftrue",new Token(IFTRUE)},
+		{"inc",new Token(INC)},{"dec",new Token(DEC)}, {"goto",new Token(GOTO)},{"iftrue",new Token(IFTRUE)},
 		{"iffalse",new Token(IFFALSE)},{"push",new Token(PUSH)},{"call",new Token(CALL)}
 	};
 	TokenStream token_stream;
@@ -40,12 +41,12 @@ namespace SVM
 			throw Error("illegal token");
 		return "<" + result->second + ">";
 	}
-	Id* Id::find(std::string str)
+	Token* Id::find(std::string str)
 	{
 		for (size_t i = 0; i < id_table().size(); i++)
 		{
-			auto result = id_table()[i].find(str);
-			if (result == id_table()[i].end())
+			auto result = id_table().find(str);
+			if (result == id_table().end())
 				continue;
 			return result->second;
 		}
@@ -206,6 +207,12 @@ namespace SVM
 		Token* process_word(const std::string& str, size_t& pos)
 		{
 			std::string ret;
+			bool is_tag = false;
+			if (str[pos]==':')
+			{
+				is_tag = true;
+				pos++;
+			}
 			bool first_char = true;
 			for (; pos < str.size(); pos++)
 			{
@@ -236,7 +243,11 @@ namespace SVM
 			if (id_result != nullptr)
 				return id_result;
 			else
+			{
+				if (is_tag)
+					return new Tag(ret);
 				return new Id(ret);
+			}
 		}
 		void build_token_stream(const std::string& content)
 		{
@@ -249,12 +260,10 @@ namespace SVM
 				case '\"':
 					token_stream.push_back(process_string(content, i));
 					break;
+				
 				case '\r':
 				case '\n':
 					token_stream.push_back(new Endl());
-					break;
-				case ':':
-					token_stream.push_back(new Token(COLON));
 					break;
 				case '.':
 					token_stream.push_back(new Token(DOT));
@@ -269,12 +278,20 @@ namespace SVM
 					token_stream.push_back(process_number(content, i));
 					i--;
 					break;
+				case ':':
 				default:
 					token_stream.push_back(process_word(content, i));
 					break;
 				}
 			}
 		}
+	}
+
+	Tag::Tag(std::string str):Token(TAG)
+	{
+		sz = Endl::current_line-Endl::unins_count-1;
+		Endl::unins_count++;
+		Id::id_table().insert({ str,this });
 	}
 
 }
